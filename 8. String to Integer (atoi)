@@ -1,0 +1,58 @@
+8. String to Integer (atoi)
+------------------------
+corner case:
+1:out of range (bigger than INT_MAX or smaller than INI_MIN)
+2.the sign bit ('-' /'+')----if the input emit the + with numbers directly, you should also transmit it
+3.transmit start form the first char that is not a whitespace and end at the last character that is not a digit
+------------------------
+idea and the mistakes made
+idea:
+firstly:find the character that is not whitespace and judge whether it is digit or "+" or "-"
+(if it is "+" or "-" transform start form the next char (mistake1))---which would lead mistakes to corner case 1 (out of range) 
+ else if it is not digit and '+' or '-' return 0
+
+secondly:
+use while to tract the end of the transform (do not forget to write i++ in while loop)
+convert :ans*10+ str[i]-'0'
+long ans/int ans differneces (one corner case)
+"-91283472332"----use long ans instead of int ans:？？？？？？？---still cuz in 32bit machine there is no differences???
+Finally:
+the range judgement:
+the neg range is actually bigger than the pos so when judge, we should add the sign bit to if-else statement
+------------------------
+class Solution {
+public:
+    int myAtoi(string str) {
+        long ans=0;
+        bool sign=true;
+        size_t Start=str.find_first_not_of(" ");
+        if(str[Start]!='-'&&!isdigit(str[Start])&&str[Start]!='+'){
+            return 0;
+        }
+        if(str[Start]=='-'){
+            sign=false;
+            Start++;
+        }
+        else if(str[Start]=='+'){
+            Start++;
+        }
+        //the first letter is digit
+        size_t i=Start;
+        while(i<str.length()){
+            if(!isdigit(str[i])){
+            break;
+            }
+            else{
+            ans=ans*10+(str[i]-'0');
+            i++;
+            if(sign==false&&ans*(-1)<INT_MIN){
+                return INT_MIN;
+            }
+            if(ans>INT_MAX&&sign==true){
+                return INT_MAX;
+            }
+            }
+        }
+     return (int) sign==0 ?ans*(-1):ans;
+    }
+};
