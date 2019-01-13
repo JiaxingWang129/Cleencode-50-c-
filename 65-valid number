@@ -1,0 +1,68 @@
+whether the input is a decimal or not
+https://leetcode.com/problems/valid-number/
+------------------------------------------------
+methods:
+1.break down the problem into several problems
+leading whitespace (optional) + (+/-)+ number + trailing whitespace
+and the number part can be divided into 
+Interger+dot+fraction part(e)
+**** 
+.1 /1./1.0  all corrct, which means you can have interger itself or interger+dot or dot+integer
+as for e-----e9 is invalid but 53.5e83 is valid and 6e-1 is valid, which means before e you have to have digit or dot
+using while to parse
+2. universal method
+define a sign bit in this case is 
+bool ans=false
+3. traverse the string bit by bit if one bit is valid then see next bit, finally check whether it trun to the last bit
+--------------------------------------------------
+code:
+class Solution {
+    public:
+    bool isNumber(string s) {
+      //emit the leading whitespace
+      size_t start=s.find_first_not_of(" ");
+      //if the string is empty
+      if(start==std::string::npos){
+          return false;
+      }
+      size_t i=start;
+      //emit the trailing whitespace
+      size_t end=s.find_last_not_of(" ");
+      //omit the sign bit (if there is not + or - is also ok, i would not increased
+      if(s[i]=='+'||s[i]=='-'){
+              i++;
+      }
+      //substract the number part
+      size_t length=end-i+1;
+      string number=s.substr(i,length);
+      size_t j=0;
+      //universal method to define a sign bit
+      bool ans=false;
+      //if it is a digit continue
+      while(j<number.length()&&isdigit(number[j])){
+          j++;
+          ans=true;
+      }
+      //the first bit that is not a digit (which means it can be a dot or e or char)
+      if(j<number.length()&&number[j]=='.'){
+          j++;
+          while(j<number.length()&&isdigit(number[j])){
+              j++;
+              ans=true;
+          }
+      }
+      //if it is e, prvious must have digit which means ans have to be true
+      if(j<number.length()&&number[j]=='e'&&ans==true){
+          j++;
+          ans=false;
+          if(number[j]=='-'||number[j]=='+'){
+              j++;
+          }
+          while(j<number.length()&&isdigit(number[j])){
+              j++;
+              ans=true;
+          }
+      }
+      return ans&&j==number.length();
+      }
+};
