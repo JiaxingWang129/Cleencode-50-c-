@@ -1,0 +1,79 @@
+3. Longest Substring Without Repeating Characters
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+-------------------------------------------
+method : in c++ 11, we can use unordered set( which would be the same as hashset in Java)
+         set could only contains unrepeated elements
+-------------------------------------------
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        //corner cases
+        if(s.length()==0){
+            return 0;
+        }
+        if(s.length()==1){
+            return 1;
+        }
+        int currLength=0;
+        int maxLength=0;
+        std::unordered_set<int> myset;
+        //the first loop would go through the whole string o(n)
+        for(int i=0;i<s.length();i++){
+            myset.clear();
+            currLength=0;
+            //the second loop just record the each set (which has no repeat element)
+            for(int j=i;j<s.length();j++){
+                if(!myset.count(s[j])){
+                    myset.insert(s[j]);
+                    currLength++;
+                    maxLength=max(maxLength,currLength);
+                }
+                //when the same element occures, would break the inner loop and clear the set)
+                else{
+                    maxLength=max(maxLength,currLength);
+                    break;
+                }
+            }
+        }
+        return maxLength;
+    }
+};
+
+----------------------------------------------------
+solution two using vector but would cause time limited and i just do not know why?????
+like some assignment in ece551, use extra space to eliminate the time
+s[i]-'a' change it to number, vector[number]++
+----------------------------------------------------
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int i=0;
+        int currLength=0;
+        int maxLength=0;
+        std::vector<int> order(256,0);
+        while(i<s.length()){
+            int Pos=s[i]-'a';
+            if(order[Pos]==0){
+                order[Pos]++;
+                i++;
+                currLength++;
+            }
+            else{
+               if(currLength>maxLength){
+               maxLength=currLength;
+               }
+               //clear the record vector
+               for(std::vector<int>::iterator it=order.begin();it!=order.end();++it){
+                   *it=0;
+               }
+               currLength=1;
+               order[Pos]++;
+               i++;
+            }
+        }
+        if(currLength>maxLength){
+             maxLength=currLength;
+        }
+        return maxLength;
+    }
+};
