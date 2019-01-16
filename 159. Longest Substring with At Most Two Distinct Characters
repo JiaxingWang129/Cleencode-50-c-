@@ -1,0 +1,46 @@
+https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
+
+
+
+----------------
+using window-sliding technique and map (vector when the key is char instead of string)
+https://www.geeksforgeeks.org/window-sliding-technique/
+when having time to read and summarize this discussion
+https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/discuss/49708/Sliding-Window-algorithm-template-to-solve-all-the-Leetcode-substring-search-problem.similar question:
+https://leetcode.com/problems/minimum-window-substring/
+https://leetcode.com/problems/longest-substring-without-repeating-characters/
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/
+https://leetcode.com/problems/find-all-anagrams-in-a-string/
+
+-----------------
+class Solution {
+public:
+    int lengthOfLongestSubstringTwoDistinct(string s) {
+      if(s.empty()){
+          return 0;
+      }
+      std::vector<int> record(256,0);
+      int start=0;
+      int count=0;
+      int maxlength=1;
+      for(int i=0;i<s.length();i++){
+        record[s[i]]++;
+        //this is the new char
+        if(record[s[i]]==1){
+           count++;
+        }
+        while(count>2){
+        //delete the start element(window sliding)
+        record[s[start]]--;
+        //delete the element do not exists in current window sliding
+        if(record[s[start]]==0){
+            count--;
+        }
+        start++;
+        }  
+         maxlength=max(maxlength,i-start+1);
+        }
+    return maxlength;
+    }
+    };
